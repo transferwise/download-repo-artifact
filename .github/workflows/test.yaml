@@ -1,0 +1,65 @@
+name: Test Upload & Download
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  upload_artifact:
+    name: Upload
+    runs-on: ubuntu-20.04
+    
+    outputs:
+      content: ${{ steps.create-file.outputs.content }}
+
+    steps:
+      - name: Create File
+        id: create-file
+        run: |
+          CONTENT=$RANDOM;
+          echo -n $CONTENT > test-file;
+          echo "::set-output name=content::$CONTENT";
+
+      - name: Upload File
+        uses: actions/upload-artifact@v2
+        with:
+         name: test-file-run-${{ github.run_number }}
+         path: test-file
+         retention-days: 1
+
+  download_artifact:
+    name: Download
+    needs: upload_artifact
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: test-file-run-${{ github.run_number }}
+
+      - name: Test File Exists
+        run: ls -l test-file
+
+      - name: Test Content
+        run: |
+          ACTUAL_CONTENT=$(cat test-file);
+          if [ "$ACTUAL_CONTENT" != "$EXPECTED_CONTENT" ]; then
+              echo '::error ::Downloaded content incorrect'
+              exit 1;
+          fi
+        env:
+          EXPECTED_CONTENT: ${{ needs.upload_artifact.outputs.content }}
+
+      - name: Download Artifact with Path
+        uses: actions/download-artifact@v2
+        with:
+          name: test-file-run-${{ github.run_number }}
+          path: path/to/artifact/with whitespace
+
+      - name: Test File Exists with Path
+        run: ls -l 'path/to/artifact/with whitespace/test-file'

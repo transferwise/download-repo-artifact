@@ -1,0 +1,39 @@
+name: Test Download
+
+on:
+  workflow_run:
+    workflows:
+      - "Test Upload & Download"
+    types:
+      - completed
+
+jobs:
+  download_artifact:
+    name: Download
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check Workflow Success
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
+
+      - name: Download Artifact
+        uses: ./
+        with:
+          name: test-file-run-${{ github.event.workflow_run.run_number }}
+
+      - name: Test File Exists
+        run: ls -l test-file
+
+      - name: Download Artifact with Path
+        uses: ./
+        with:
+          name: test-file-run-${{ github.event.workflow_run.run_number }}
+          path: path/to/artifact/with whitespace
+
+      - name: Test File Exists with Path
+        run: ls -l 'path/to/artifact/with whitespace/test-file'

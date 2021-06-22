@@ -1,0 +1,17 @@
+name: 'Download Artifact'
+description: 'Download a repository-scoped artifact'
+inputs:
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Destination path'
+    required: false
+    default: .
+runs:
+  using: 'composite'
+  steps:
+    - run: ${GITHUB_ACTION_PATH}/action.sh "${{ inputs.name }}" "${{ inputs.path }}"
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

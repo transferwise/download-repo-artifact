@@ -18,7 +18,7 @@ for iteration in $(seq 1 60); do
     curl --silent \
         --header "Authorization: token ${GITHUB_TOKEN}" \
         --header 'Accept: application/vnd.github.v3+json' \
-        "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts?per_page=${PAGE_SIZE}" > $TEMP_FILE;
+        "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts?per_page=${PAGE_SIZE}&page=${iteration}" > $TEMP_FILE;
     if [ $? -ne 0 ]; then
         echo "::error ::Can't get artifact list";
         exit 1;

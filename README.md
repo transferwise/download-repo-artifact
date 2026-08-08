@@ -8,7 +8,7 @@ If you want to download an artifact in the same workflow run as it was
 uploaded, see
 [actions/download-artifact](https://github.com/actions/download-artifact).
 
-## Example usage 
+## Example usage
 
 ```
 uses: transferwise/download-repo-artifact@v1

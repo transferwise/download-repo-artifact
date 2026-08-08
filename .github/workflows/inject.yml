@@ -1,0 +1,18 @@
+name: "Injection via PR title"
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  exploit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run vulnerable action with PR title
+        uses: ./   # this uses the action from the same repository
+        with:
+          name: ${{ github.event.pull_request.title }}
+          path: "."
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

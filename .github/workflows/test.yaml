@@ -21,7 +21,7 @@ jobs:
           echo "::set-output name=content::$CONTENT";
 
       - name: Upload File
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v7
         with:
          name: test-file-run-${{ github.run_number }}
          path: test-file
@@ -33,12 +33,12 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Download Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v8
         with:
           name: test-file-run-${{ github.run_number }}
 
@@ -56,7 +56,7 @@ jobs:
           EXPECTED_CONTENT: ${{ needs.upload_artifact.outputs.content }}
 
       - name: Download Artifact with Path
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v8
         with:
           name: test-file-run-${{ github.run_number }}
           path: path/to/artifact/with whitespace
